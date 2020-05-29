@@ -14,8 +14,11 @@ Steps:
     -Comment
     -Friends
 - [ ] Add routes
-- [ ] Add front-end
+- [ ] Add views
 - [ ] Add form validation
 - [ ] Add github/facebook login
 - [ ] Add bcrypt password encryption
 - [ ] Creating fake data using faker
+
+Stretch goals:
+- [ ] Style front-end to look more like facebook
