@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  -title = 'OdinBook'
+  -user = 'John Doe'
+  .row
+   .col-lg-3(style='border-right: 1px solid gray;')
+     // Left column for activites
+     h1.display-6 #{user}
+     ul
+      li
+       a(href="") Watch
+      li
+       a(href="") Events
+      li
+       a(href="") Friends
+      li
+       a(href="") Memories
+     hr.my-4
+     h1.display-6 Shortcuts
+     ul
+      li
+       a(href="")
+   .col-lg-6(id='feed')
+     // Feed goes here
+     h1.display-3 Feed
+   .col-lg-3(style='border-left: 1px solid gray;')
+    // Right column for profile info + friends
+    h1.display-6 Add
+     i
+    hr.my-4
+    h1.display-6 Birthdays
+    hr.my-4
+    h1.display-6 Friends
+
