@@ -9,6 +9,11 @@ a {
   color: #00B7FF;
 }
 
+.navbar {
+  height: 9vh;
+  margin-bottom: 3vh;
+}
+
 #feed {
   text-align: center;
 }
