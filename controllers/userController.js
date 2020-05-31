@@ -114,3 +114,113 @@ exports.timeline = (req, res, next) => {
     );
 };
 
+// friendships = friends
+// friends = userFriends
+
+// GET profile (user details & posts)
+exports.userProfile = (req, res, next) => {
+    async.waterfall(
+        [
+            (callback) =>
+                User.findById(req.params.id).exec((err, user) => {
+                    if (err) return next(err);
+
+                    callback(null, user);
+                }),
+            (user, callback) =>
+                Post.find({ user: req.params.id }).populate('user').exec((err, userPosts) => {
+                    if (err) return next(err);
+                }),
+            (user, userPosts, callback) =>
+                Comment.find({ user: req.params.id }).exec((err, comments) => {
+                    if (err) return next(err);
+
+                    callback(null, user, userPosts, comments);
+                }),
+            (user, userPosts, comments, friends, callback) =>
+                Friend.find({ user2: req.params.id }).exec(
+                    (err, moreFriends) => {
+                        if (err) return next(err);
+                        friends = friends.concat(moreFriends);
+                        callback(null, user, userPosts, comments, friends);
+                    }
+                ),
+            (user, userPosts, comments, friends, callback) => {
+                const friends = [];
+                function getFriends() {
+                    return new Promise((resolve, reject) => {
+                        if (friends.length <= 0) resolve();
+
+                        for (let i = 0; i < friends.length; i++) {
+                            if (friends[i].user1.equals(req.user._id)) {
+                                User.findById(friends[i].user2).exec((err, user) => {
+                                    if (err) return next(err);
+                                    if (user === null) return res.sendStatus(404);
+
+                                    userFriends.push(user);
+                                    if (i === friends.length - 1) resolve();
+                                });
+                            } else {
+                                User.findById(friends[i].user2).exec((err, user) => {
+                                    if (err) return next(err);
+                                    if (user === null) return res.sendStatus(404);
+
+                                    userFriends.push(user);
+                                    if (i === friends.length - 1) resolve();
+                                });
+                            }
+                        }
+                    });
+                }
+
+                getFriends().then(() =>
+                    callback(null, user, userPosts, comments, friends, userFriends)
+                );
+            },
+
+            (user, userPosts, comments, friends, userFriends, callback) => {
+                User.findById(req.params.id).exec((err, user) => {
+                    if (err) return next(err);
+                    if (user === null) return sendStatus(404);
+                    callback(null, { user, userPosts, comments, userFriends, user, friends });
+                });
+            }
+        ],
+        (err, results) => {
+            if (err) return next(err);
+            if (results.user === null) {
+                let err = new Error('User not found');
+                err.status = 404;
+                return next(err);
+            }
+            // Friend request: only if user2 != user1 
+            // && user2 hasn't already made request
+            let friendRequestAvailable = req.user._id.toString() !== req.params.id.toString();
+            results.friends.forEach((friend) => {
+                if (friend.equals(result.user)) {
+                    friendRequestAvailable = false;
+                }
+            });
+
+            res.render('profile', {
+                user: req.user,
+                userProfile: results.user,
+                posts: results.userPosts,
+                comments: results.comments,
+                friendRequestAvailable: friendRequestAvailable,
+            });
+        }
+    );
+};
+
+// GET list of user friends
+exports.userFriends = (req, res, next) => {
+
+}
+
+
+// GET user friend requests
+exports.userFriendRequests = (req, res, next) => {
+    const friendRequests = [];
+    async.waterfall([])
+}
