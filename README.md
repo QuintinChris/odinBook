@@ -9,11 +9,11 @@ Steps:
     -Comments
     -Friends
 - [ ] Add Controllers
-    -User
-    -Post
-    -Comment
-    -Friends
-- [ ] Add routes
+    - [X] User
+    - [ ] Post
+    - [ ] Comment
+    - [ ] Friends
+- [X] Add routes
 - [ ] Add views
 - [ ] Add form validation
 - [ ] Add github/facebook login

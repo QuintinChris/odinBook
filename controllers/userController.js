@@ -146,7 +146,7 @@ exports.userProfile = (req, res, next) => {
                     }
                 ),
             (user, userPosts, comments, friends, callback) => {
-                const friends = [];
+                let friends = [];
                 function getFriends() {
                     return new Promise((resolve, reject) => {
                         if (friends.length <= 0) resolve();
@@ -215,12 +215,110 @@ exports.userProfile = (req, res, next) => {
 
 // GET list of user friends
 exports.userFriends = (req, res, next) => {
-
-}
+    let friends = [];
+    async.waterfall([
+        (callback) =>
+            Friend.find({ user1: req.params.id }).exec((err, friends) => {
+                if (err) return next(err);
+                callback(null, friends);
+            }),
+        (friends, callback) =>
+            Friend.find({ user2: req.params.id }).exec(
+                (err, moreFriends) => {
+                    if (err) return next(err);
+                    friends = friends.concat(moreFriends);
+                    callback(null, friends);
+                }
+            ),
+        (friends, callback) => {
+            function getFriends() {
+                return new Promise((resolve, reject) => {
+                    if (friends.length <= 0) resolve();
+                    for (let i = 0; i < friends.length; i++) {
+                        if (friends[i].user1.equals(req.params.id)) {
+                            User.findById(friends[i].user2).exec((err, user) => {
+                                if (err) return next(err);
+                                if (user === null) return res.sendStatus(404);
+                                if (friends[i].status == 'Accepted') {
+                                    friends.push(user);
+                                }
+                                if (i === friends.length - 1) resolve();
+                            });
+                        } else {
+                            User.findById(friends[i].user1).exec((err, user) => {
+                                if (err) return next(err);
+                                if (user === null) return res.sendStatus(404);
+                                if (friends[i].status == 'Accepted') {
+                                    friends.push(user);
+                                }
+                                if (i === friends.length - 1) resolve();
+                            });
+                        }
+                    }
+                });
+            }
+            getFriends().then(() => callback(null, friends, userFriends));
+        },
+        (friends, userFriends, callback) => {
+            User.findById(req.params.id).exec((err, user) => {
+                if (err) return next(err);
+                if (user === null) return res.sendStatus(404);
+                callback(null, { user, friends, userFriends });
+            });
+        }
+    ],
+        (err, results) => {
+            if (err) return next(err);
+            res.render('friendlist', {
+                user: req.user,
+                userProfile: results.user,
+                friends: results.friends
+            });
+        });
+};
 
 
 // GET user friend requests
 exports.userFriendRequests = (req, res, next) => {
-    const friendRequests = [];
-    async.waterfall([])
-}
+    let friendRequests = [];
+    async.waterfall([
+        (callback) =>
+            Friend.find({ user2: req.user._id }).exec((err, friends) => {
+                if (err) return next(err);
+
+                callback(null, friends);
+            }),
+
+        (friends, callback) => {
+            function getFriends() {
+                return new Promise((resolve, reject) => {
+                    if (friends.length <= 0) resolve();
+                    for (let i = 0; i < friends.length; i++) {
+                        User.findById(friends[i].user1).exec((err, user) => {
+                            if (err) return next(err);
+                            if (user === null) return res.sendStatus(404);
+                            if (friends[i].status == 'Pending') {
+                                // Defining friend request object, pushing into array
+                                friendRequests.push({
+                                    user: user,
+                                    status: 'Pending',
+                                    id: friends[i].id
+                                });
+                            }
+                            if (i === friends.length - 1) resolve();
+                        });
+                    }
+                });
+            }
+            getFriends().then(() => callback(null, friendRequests));
+        }
+    ],
+        (err, results) => {
+            if (err) return next(err);
+            res.render('friendRequests', {
+                user: req.user,
+                friendRequests: results
+            });
+        }
+    );
+};
