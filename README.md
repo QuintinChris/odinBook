@@ -10,9 +10,9 @@ Steps:
     -Friends
 - [ ] Add Controllers
     - [X] User
-    - [ ] Post
-    - [ ] Comment
-    - [ ] Friends
+    - [X] Post
+    - [X] Comment
+    - [X] Friends
 - [X] Add routes
 - [ ] Add views
 - [ ] Add form validation
