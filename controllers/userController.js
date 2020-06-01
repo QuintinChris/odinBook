@@ -41,7 +41,7 @@ exports.userProfile = (req, res, next) => {
                     }
                 ),
             (user, userPosts, comments, friends, callback) => {
-                let friends = [];
+                //let friends = [];
                 function getFriends() {
                     return new Promise((resolve, reject) => {
                         if (friends.length <= 0) resolve();

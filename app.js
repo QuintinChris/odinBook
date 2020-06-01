@@ -12,6 +12,9 @@ require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var postsRouter = require('./routes/posts');
+var friendsRouter = require('./routes/friends');
+var commentsRouter = require('./routes/comments');
 
 // Establish and connect database
 var mongoDB = process.env.MONGO_URL;
@@ -41,9 +44,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/posts', postsRouter);
+app.use('/users/friends', friendsRouter);
+app.use('/posts/:id/comments', commentsRouter);
 
+/* GET home page. */
+app.get('/', function (req, res, next) {
+  res.render('index', { title: 'Express' });
+});
 
 
 

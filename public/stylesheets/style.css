@@ -17,3 +17,7 @@ a {
 #feed {
   text-align: center;
 }
+
+#submitPost {
+  width: 100%;
+}

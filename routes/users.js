@@ -1,21 +1,21 @@
 var express = require('express');
 var router = express.Router();
-var usersController = require("../controllers/usersController");
+var userController = require("../controllers/userController");
 
 
 // GET  all users
-router.get("/", usersController.allUsers);
+router.get("/", userController.allUsers);
 
 // GET user profile
-router.get("/:id/profile", usersController.userProfile);
+router.get("/:id/profile", userController.userProfile);
 
 // GET users timeline
-router.get("/timeline", usersController.userTimeline);
+//router.get("/timeline", userController.userTimeline);
 
 // GET users friend list
-router.get("/:id/friends", usersController.userFriends);
+router.get("/:id/friends", userController.userFriends);
 
-// GET request for logged in users friend requests
-router.get("/friend-requests", usersController.userFriendRequests);
+// GET logged in users friend requests
+router.get("/friend-requests", userController.userFriendRequests);
 
 module.exports = router;

@@ -2,6 +2,42 @@ extends layout
 
 block content
     .row
-     .col-lg-8
+     .col-lg-10
       .jumbotron
-       i(id='hero')
+       i= user.hero
+      i= user.picture
+      h1= user.name
+    .col-lg-8
+     form(action='/posts/new', method='post')
+     div.form-group
+      // user image
+      // label #{user}
+      textarea.form-control(name="content", placeholder="What's on your mind?",cols="30", rows="5", style='margin-bottom: 2vh;')
+      label.btn.btn-lg.btn-outline-secondary.btn-file(style='width: 100%;') Add image
+        input(type="file", style='display: none;')
+      button.btn.btn-sm.btn-primary(id='submitPost',type='submit') Post
+      hr.my-3
+     each post in userPosts
+      div.card
+        .card-header
+         span= post.timestamp
+        .card-body
+         div= post.content
+         p= post.likes
+         hr.my-2
+         form(action="/posts/#{post.id}/like", method='post')
+          button.btn.btn-sm Like this post
+         // like, comment, share links/buttons
+         hr.my-2
+        .card-footer
+         form.form-group(action='/posts/#{post.id}/comments/new', method='post')
+          textarea.form-control-sm(name='comment', placeholder='Add comment')
+    .col-lg-4
+     - var numFR = friendRequests.length;
+     - var numFriends = userFriends.length;
+     h1 You have #{numFR} friend requests!
+      a(href='/user/friend-requests/') View
+     h4 You have #{numFriends} friends
+      a(href='/users/friends') See all
+     
+    

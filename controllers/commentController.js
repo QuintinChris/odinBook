@@ -1,4 +1,5 @@
 var Comment = require('../models/Comments');
+var validator = require('express-validator');
 
 // create comment
 exports.commentCreate = [
