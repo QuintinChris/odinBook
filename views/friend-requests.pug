@@ -1,0 +1,15 @@
+extends layout
+
+block content
+ - var requests = userProfile.friendRequests;
+ if requests.length > 0
+  h1 Friend Requests:
+   each request in requests
+    ul
+     li
+      a(href="/users/#{request.user._id}/profile") #{request.user.name}
+      span Pending
+      form(action="/users/friends/#{request.id}/accept", method='post')
+       button Accept
+ else
+  p No new friend requests

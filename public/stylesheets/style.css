@@ -21,3 +21,16 @@ a {
 #submitPost {
   width: 100%;
 }
+
+#loginForm {
+  margin: auto;
+  text-align: center;
+}
+
+.btns {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}

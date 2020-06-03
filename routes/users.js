@@ -7,7 +7,7 @@ var userController = require("../controllers/userController");
 router.get("/", userController.allUsers);
 
 // GET user profile
-router.get("/:id/profile", userController.userProfile);
+router.get("/profile", userController.userProfile);
 
 // GET users timeline
 //router.get("/timeline", userController.userTimeline);

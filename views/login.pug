@@ -1,0 +1,12 @@
+extends layout
+
+block content
+ .btns
+  .row
+   a(href="/auth/github", style='margin-bottom: 2vh;')
+    button.btn.btn-lg.btn-dark Login with Github
+     i.fab.fa-github(style='margin-left: 2vh;')
+  .row
+   a(href="/auth/facebook")
+    button.btn.btn-lg.btn-primary Login with Facebook
+     i.fab.fa-facebook-square(style='margin-left: 2vh;')

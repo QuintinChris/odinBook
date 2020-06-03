@@ -4,8 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var helmet = require('helmet');
-var passport = require('passport');
 var mongoose = require('mongoose');
+var passport = require('passport');
 var GithubStrategy = require('passport-github').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 require('dotenv').config();
@@ -22,7 +22,19 @@ mongoose.connect(mongoDB, { useUnifiedTopology: true, useNewUrlParser: true });
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'mongo connection error'));
 
-
+// Set up facebook login
+passport.use(new FacebookStrategy({
+  clientID: process.env.FACEBOOK_APP_ID,
+  clientSecret: process.env.FACEBOOK_APP_SECRET,
+  callbackURL: "https://127.0.0.1:3000/auth/facebook/callback"
+},
+  function (accessToken, refreshToken, profile, done) {
+    User.findOrCreate(User, function (err, user) {
+      if (err) { return done(err); }
+      done(null, user);
+    });
+  }
+));
 
 
 
@@ -43,18 +55,29 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(helmet());
 
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/users/friends', friendsRouter);
 app.use('/posts/:id/comments', commentsRouter);
 
-/* GET home page. */
+// GET home page
 app.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+// GET login
+app.get("/login", (req, res) => res.render("login", { user: req.user }));
+app.get("/login/github", passport.authenticate("github"));
 
+// Facebook login
+app.get('/auth/facebook', passport.authenticate('facebook'));
+app.get('/auth/facebook/callback',
+  passport.authenticate('facebook', {
+    successRedirect: '/',
+    failureRedirect: '/login'
+  }));
 
 
 

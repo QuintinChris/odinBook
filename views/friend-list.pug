@@ -1,0 +1,10 @@
+extends layout
+
+block content
+ - var username = userProfile.name
+ - var friends = userProfile.friends
+ h1 #{username}'s Friends
+  ul
+   each friend in friends
+    li
+     a(href="/users/#{friend.id}/profile") #{friend.name}

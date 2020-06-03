@@ -14,19 +14,19 @@ Steps:
     - [X] Comment
     - [X] Friends
 - [X] Add routes
-- [ ] Add views
+- [X] Add views
     - [X] timeline
     - [X] profile
-    - [ ] friendlist
-    - [ ] friend request
-    - [ ] login
+    - [X] friendlist
+    - [X] friend request
+    - [X] login
 
 -redo index.pug to just have profile preview on left, new form post below that, and timeline on right
 
-- [ ] Add form validation
-- [ ] Add github/facebook login
+- [X] Add facebook login
+- [ ] Add github login
 - [ ] Add bcrypt password encryption
-- [ ] Creating fake data using faker
+- [ ] Creating fake data using faker (easy!)
 
 Stretch goals:
 - [ ] Style front-end to look more like facebook
